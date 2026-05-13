@@ -1,0 +1,16 @@
+export const colors = {
+  primary: "#1A6FBF",
+  primaryDark: "#145299",
+  primaryLight: "#E8F4FD",
+  accent: "#0D4A8C",
+  slotFree: "#2ECC71",
+  slotFull: "#E74C3C",
+  slotLow: "#F39C12",
+  slotMaint: "#BDC3C7",
+  statusActive: "#1A6FBF",
+  statusConfirmed: "#2ECC71",
+  statusCompleted: "#7F8C8D",
+  statusCancelled: "#E74C3C",
+  surface: "#F5F8FB",
+  card: "#FFFFFF",
+} as const;
