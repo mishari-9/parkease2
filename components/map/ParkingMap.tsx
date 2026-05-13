@@ -3,11 +3,13 @@
 import dynamic from "next/dynamic";
 import { useMemo } from "react";
 import type { ParkingLot } from "@/types";
+import { campusCenter } from "@/data/mockLots";
+import { useThemeStore } from "@/store/themeStore";
 
 const LeafletMap = dynamic(() => import("./LeafletMap"), {
   ssr: false,
   loading: () => (
-    <div className="flex h-full min-h-[320px] items-center justify-center rounded-2xl bg-pe-surface text-sm text-slate-500">
+    <div className="flex h-full min-h-[280px] items-center justify-center rounded-2xl bg-pe-surface text-sm text-slate-500 dark:bg-slate-900/80 dark:text-slate-400">
       Loading map…
     </div>
   ),
@@ -16,15 +18,27 @@ const LeafletMap = dynamic(() => import("./LeafletMap"), {
 type Props = {
   lots: ParkingLot[];
   onSelectLot?: (lot: ParkingLot) => void;
+  className?: string;
 };
 
-const DEFAULT_CENTER: [number, number] = [24.7136, 46.6753];
+export function ParkingMap({ lots, onSelectLot, className = "" }: Props) {
+  const center = useMemo(() => {
+    const c = campusCenter();
+    return [c.lat, c.lng] as [number, number];
+  }, []);
+  const darkTiles = useThemeStore((s) => s.resolved === "dark");
 
-export function ParkingMap({ lots, onSelectLot }: Props) {
-  const center = useMemo(() => DEFAULT_CENTER, []);
   return (
-    <div className="relative h-[min(55vh,420px)] w-full overflow-hidden rounded-2xl border border-slate-200 shadow-card">
-      <LeafletMap lots={lots} center={center} zoom={12} onSelectLot={onSelectLot} />
+    <div
+      className={`relative w-full overflow-hidden rounded-2xl border border-slate-200 shadow-card dark:border-slate-600 dark:shadow-none ${className}`}
+    >
+      <LeafletMap
+        lots={lots}
+        center={center}
+        zoom={17}
+        onSelectLot={onSelectLot}
+        darkTiles={darkTiles}
+      />
     </div>
   );
 }

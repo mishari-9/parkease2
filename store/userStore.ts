@@ -34,7 +34,7 @@ const demoUser: User = {
     { id: "pm2", label: "STC Pay", type: "stc_pay" },
     { id: "pm3", label: "Apple Pay", type: "apple_pay" },
   ],
-  savedLotIds: ["lot-1"],
+  savedLotIds: ["qu-coc-main"],
   createdAt: new Date("2024-01-15"),
 };
 

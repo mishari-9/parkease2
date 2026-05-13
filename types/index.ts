@@ -60,10 +60,16 @@ export interface ParkingSlot {
   floor: number;
 }
 
+/** What this area is (surface, garage, faculty-only, etc.) — shown on map & detail. */
+export type ParkingLotCategory = "surface" | "multi_storey" | "faculty" | "visitor" | "mixed";
+
 export interface ParkingLot {
   id: string;
   name: string;
   address: string;
+  /** Short label for map pins, e.g. "Visitor · Surface" */
+  mapLabel?: string;
+  category?: ParkingLotCategory;
   location: Coordinates;
   totalSlots: number;
   availableSlots: number;

@@ -12,6 +12,7 @@ import { useBookingFlowStore } from "@/store/bookingFlowStore";
 import { useUserStore } from "@/store/userStore";
 import { isLotOpenAt } from "@/lib/formatDate";
 import { tc } from "@/lib/i18n";
+import { formatLotCategory } from "@/lib/formatLotCategory";
 import { Star, Heart } from "lucide-react";
 
 type Props = { lot: ParkingLot };
@@ -53,22 +54,22 @@ export function LotDetailClient({ lot }: Props) {
   };
 
   return (
-    <div className="min-h-screen bg-pe-surface pb-28">
+    <div className="min-h-screen bg-[var(--background)] pb-28 lg:pb-12">
       <PageHeader title={lot.name} backHref="/" />
-      <div className="mx-auto max-w-lg px-4 py-4">
-        <div className="relative aspect-[16/9] overflow-hidden rounded-2xl bg-slate-200 shadow-card">
+      <div className="mx-auto max-w-4xl px-4 py-4 sm:px-6 lg:px-8">
+        <div className="relative aspect-[16/9] max-h-[420px] overflow-hidden rounded-2xl bg-slate-200 shadow-card dark:bg-slate-800">
           <Image
-            src={lot.photoUrls[0] ?? "https://images.unsplash.com/photo-1506521781263-d8422e82f57a?w=800&q=80"}
+            src={lot.photoUrls[0] ?? "https://images.unsplash.com/photo-1506521781263-d8422e82f57a?w=1600&q=90"}
             alt={lot.name}
             fill
             className="object-cover"
-            sizes="(max-width:768px) 100vw, 480px"
+            sizes="(max-width:768px) 100vw, 896px"
             priority
           />
           <button
             type="button"
             onClick={() => toggleSaved(lot.id)}
-            className="absolute end-3 top-3 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-pe-primary shadow"
+            className="absolute end-3 top-3 flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-pe-primary shadow dark:bg-slate-900/90"
             aria-label="Save"
           >
             <Heart className={`h-5 w-5 ${saved ? "fill-red-500 text-red-500" : ""}`} />
@@ -76,27 +77,36 @@ export function LotDetailClient({ lot }: Props) {
         </div>
 
         <div className="mt-4 flex items-center gap-2">
-          <div className="flex items-center gap-1 rounded-full bg-amber-50 px-2 py-1 text-amber-800">
+          <div className="flex items-center gap-1 rounded-full bg-amber-50 px-2 py-1 text-amber-800 dark:bg-amber-950/50 dark:text-amber-200">
             <Star className="h-4 w-4 fill-amber-400 text-amber-500" />
             <span className="text-sm font-semibold">{lot.rating}</span>
             <span className="text-xs text-amber-700/80">({lot.reviewCount})</span>
           </div>
           <span
             className={`rounded-full px-2 py-1 text-xs font-medium ${
-              openNow ? "bg-emerald-50 text-emerald-800" : "bg-slate-100 text-slate-600"
+              openNow
+                ? "bg-emerald-50 text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-200"
+                : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300"
             }`}
           >
             {openNow ? (lang === "ar" ? "مفتوح الآن" : "Open now") : lang === "ar" ? "مغلق" : "Closed"}
           </span>
         </div>
 
-        <p className="mt-2 text-sm text-slate-600">{lot.address}</p>
-        <p className="mt-1 text-sm font-semibold text-pe-primary">
-          SAR {lot.pricePerHour} / hr · {lot.availableSlots} {tc(lang, "spots")}
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{lot.address}</p>
+        <p className="mt-1 text-xs font-bold uppercase tracking-wide text-pe-primary">{lot.mapLabel}</p>
+        <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+          {tc(lang, "lotType")}: {formatLotCategory(lang, lot.category)}
+        </p>
+        <p className="mt-2 text-sm font-semibold text-pe-primary">
+          SAR {lot.pricePerHour} / hr ·{" "}
+          {lang === "ar"
+            ? `${lot.availableSlots} متاح من ${lot.totalSlots}`
+            : `${lot.availableSlots} of ${lot.totalSlots} free`}
         </p>
 
         <div className="mt-6">
-          <h3 className="text-base font-semibold text-slate-900">
+          <h3 className="text-base font-semibold text-slate-900 dark:text-white">
             {lang === "ar" ? "اختر الطابق" : "Floor"}
           </h3>
           <div className="mt-2 flex flex-wrap gap-2">
@@ -108,7 +118,7 @@ export function LotDetailClient({ lot }: Props) {
                 className={`rounded-full px-4 py-2 text-sm font-medium transition ${
                   floor === f
                     ? "bg-pe-primary text-white shadow"
-                    : "bg-white text-slate-600 ring-1 ring-slate-200"
+                    : "bg-white text-slate-600 ring-1 ring-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-600"
                 }`}
               >
                 {f}
@@ -118,8 +128,10 @@ export function LotDetailClient({ lot }: Props) {
         </div>
 
         <div className="mt-6">
-          <h3 className="text-base font-semibold text-slate-900">{tc(lang, "availability")}</h3>
-          <p className="mt-1 text-xs text-slate-500">
+          <h3 className="text-base font-semibold text-slate-900 dark:text-white">
+            {tc(lang, "availability")}
+          </h3>
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
             {lang === "ar" ? "أخضر متاح · برتقالي محجوز · أحمر مشغول" : "Green free · Orange reserved · Red busy"}
           </p>
           <div className="mt-3">
@@ -129,13 +141,13 @@ export function LotDetailClient({ lot }: Props) {
 
         <motion.div
           layout
-          className="fixed inset-x-0 bottom-[60px] z-30 border-t border-slate-200 bg-white/95 p-4 backdrop-blur sm:relative sm:bottom-auto sm:mt-8 sm:rounded-2xl sm:border sm:shadow-card"
+          className="fixed inset-x-0 bottom-[60px] z-30 border-t border-slate-200 bg-white/95 p-4 backdrop-blur dark:border-slate-700 dark:bg-slate-900/95 lg:static lg:inset-auto lg:mt-8 lg:rounded-2xl lg:border lg:shadow-card"
         >
           <button
             type="button"
             disabled={!selected}
             onClick={onReserve}
-            className="flex h-12 w-full items-center justify-center rounded-xl bg-pe-primary text-sm font-bold text-white shadow-lg transition enabled:hover:bg-pe-primary-dark disabled:cursor-not-allowed disabled:bg-slate-300"
+            className="flex h-12 w-full items-center justify-center rounded-xl bg-pe-primary text-sm font-bold text-white shadow-lg transition enabled:hover:bg-pe-primary-dark disabled:cursor-not-allowed disabled:bg-slate-300 dark:disabled:bg-slate-600"
           >
             {tc(lang, "reserve")}
           </button>

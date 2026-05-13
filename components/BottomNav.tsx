@@ -27,7 +27,7 @@ export function BottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 inset-x-0 z-50 flex h-[60px] items-stretch border-t border-pe-primary/10 bg-white shadow-nav safe-area-pb"
+      className="fixed bottom-0 inset-x-0 z-50 flex h-[60px] items-stretch border-t border-slate-200/80 bg-white/95 shadow-nav backdrop-blur-md safe-area-pb dark:border-slate-700 dark:bg-slate-900/95 lg:hidden"
       aria-label="Main"
     >
       {tabs.map(({ href, icon: Icon, labelKey }) => {
@@ -44,8 +44,8 @@ export function BottomNav() {
           >
             {active && (
               <motion.span
-                layoutId="nav-pill"
-                className="absolute inset-x-3 top-1 h-9 rounded-xl bg-pe-light"
+                layoutId="tab-pill-mobile"
+                className="absolute inset-x-3 top-1 h-9 rounded-xl bg-pe-light dark:bg-slate-800"
                 transition={{ type: "spring", stiffness: 400, damping: 30 }}
               />
             )}

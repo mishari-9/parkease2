@@ -6,6 +6,7 @@ import { Search, SlidersHorizontal } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useUserStore } from "@/store/userStore";
 import { tc } from "@/lib/i18n";
+import { QASSIM_SEARCH_HINTS } from "@/data/mockLots";
 
 type Props = {
   initialQuery?: string;
@@ -27,10 +28,10 @@ export function SearchBar({ initialQuery = "", compact }: Props) {
   }, [q, router]);
 
   const suggestions = useMemo(() => {
-    if (!q.trim()) return [] as string[];
-    return ["KAFD", "Olaya", "Mall", "Boulevard", "DQ"].filter((s) =>
-      s.toLowerCase().includes(q.trim().toLowerCase())
-    );
+    const t = q.trim().toLowerCase();
+    const pool = [...QASSIM_SEARCH_HINTS, "visitor", "garage", "student", "faculty", "ev"];
+    if (!t) return pool.slice(0, 8);
+    return pool.filter((s) => s.toLowerCase().includes(t)).slice(0, 10);
   }, [q]);
 
   return (
@@ -48,13 +49,13 @@ export function SearchBar({ initialQuery = "", compact }: Props) {
               }
             }}
             placeholder={tc(lang, "searchPlaceholder")}
-            className="h-12 w-full rounded-2xl border border-slate-200 bg-white ps-11 pe-4 text-sm shadow-sm outline-none ring-pe-primary/30 transition focus:border-pe-primary focus:ring-2"
+            className="h-12 w-full rounded-2xl border border-slate-200 bg-white/95 ps-11 pe-4 text-sm text-slate-900 shadow-sm outline-none ring-pe-primary/30 transition placeholder:text-slate-400 focus:border-pe-primary focus:ring-2 dark:border-slate-600 dark:bg-slate-900/90 dark:text-slate-100 dark:placeholder:text-slate-500"
           />
         </div>
         <button
           type="button"
           onClick={() => setFiltersOpen((o) => !o)}
-          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-white text-pe-primary shadow-sm transition hover:bg-pe-light"
+          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-white text-pe-primary shadow-sm transition hover:bg-pe-light dark:border-slate-600 dark:bg-slate-900 dark:hover:bg-slate-800"
           aria-expanded={filtersOpen}
           aria-label={tc(lang, "filters")}
         >

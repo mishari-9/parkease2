@@ -8,12 +8,43 @@ import { PriceSummary } from "@/components/booking/PriceSummary";
 import { useBookingFlowStore } from "@/store/bookingFlowStore";
 import { useUserStore } from "@/store/userStore";
 import { useBookingHistoryStore } from "@/store/bookingHistoryStore";
+import { useThemeStore } from "@/store/themeStore";
 import { getLotById } from "@/data/mockLots";
 import { calculateBookingPrice } from "@/lib/priceCalc";
 import { generateQRPayload } from "@/lib/generateQR";
-import type { Booking, PaymentMethodType } from "@/types";
+import type { Booking, PaymentMethodType, Vehicle } from "@/types";
 import { tc } from "@/lib/i18n";
 import { addHours } from "date-fns";
+import { Car, Truck, Bike } from "lucide-react";
+
+function vehicleTypeIcon(type: Vehicle["type"]) {
+  switch (type) {
+    case "truck":
+      return <Truck className="h-7 w-7 shrink-0 text-pe-primary" aria-hidden />;
+    case "motorcycle":
+      return <Bike className="h-7 w-7 shrink-0 text-pe-primary" aria-hidden />;
+    case "suv":
+    case "sedan":
+    default:
+      return <Car className="h-7 w-7 shrink-0 text-pe-primary" aria-hidden />;
+  }
+}
+
+function vehicleTypeLabel(lang: "en" | "ar", type: Vehicle["type"]) {
+  const en: Record<Vehicle["type"], string> = {
+    sedan: "Sedan",
+    suv: "SUV",
+    truck: "Truck / van",
+    motorcycle: "Motorcycle",
+  };
+  const ar: Record<Vehicle["type"], string> = {
+    sedan: "سيدان",
+    suv: "دفع رباعي",
+    truck: "شاحنة / فان",
+    motorcycle: "دراجة",
+  };
+  return lang === "ar" ? ar[type] : en[type];
+}
 
 const steps = ["stepTime", "stepVehicle", "stepReview", "stepPay"] as const;
 
@@ -38,6 +69,7 @@ export function BookingFlowClient({ lotId }: Props) {
   const setSubmitting = useBookingFlowStore((s) => s.setSubmitting);
   const isSubmitting = useBookingFlowStore((s) => s.isSubmitting);
   const addBooking = useBookingHistoryStore((s) => s.addBooking);
+  const darkUi = useThemeStore((s) => s.resolved === "dark");
 
   const [localStart, setLocalStart] = useState(() => {
     const d = new Date();
@@ -59,9 +91,9 @@ export function BookingFlowClient({ lotId }: Props) {
 
   if (!lot || !slot) {
     return (
-      <div className="min-h-screen bg-pe-surface px-4 py-8">
+      <div className="min-h-screen bg-[var(--background)] px-4 py-8">
         <PageHeader title="Booking" backHref="/" />
-        <p className="mx-auto mt-8 max-w-md text-center text-slate-600">
+        <p className="mx-auto mt-8 max-w-md text-center text-slate-600 dark:text-slate-300">
           {lang === "ar"
             ? "لم يتم اختيار موقف. ارجع واختر موقفاً من صفحة الموقف."
             : "No slot selected. Open a lot, pick a free slot, then tap Reserve."}
@@ -152,10 +184,10 @@ export function BookingFlowClient({ lotId }: Props) {
   ];
 
   return (
-    <div className="min-h-screen bg-pe-surface pb-8">
+    <div className="min-h-screen bg-[var(--background)] pb-12">
       <PageHeader title={tc(lang, "reserve")} backHref={`/lots/${lotId}`} />
 
-      <div className="mx-auto max-w-lg px-4 py-4">
+      <div className="mx-auto max-w-2xl px-4 py-4 sm:px-6 lg:px-8">
         <div className="mb-6 flex gap-1">
           {steps.map((key, i) => {
             const n = i + 1;
@@ -166,13 +198,17 @@ export function BookingFlowClient({ lotId }: Props) {
                 <motion.div
                   animate={{
                     scale: active ? 1.05 : 1,
-                    backgroundColor: done || active ? "#1A6FBF" : "#e2e8f0",
+                    backgroundColor: done || active ? "#1A6FBF" : darkUi ? "#334155" : "#e2e8f0",
                   }}
                   className="flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold text-white"
                 >
                   {done ? "✓" : n}
                 </motion.div>
-                <span className={`text-[10px] font-medium ${active ? "text-pe-primary" : "text-slate-400"}`}>
+                <span
+                  className={`text-[10px] font-medium ${
+                    active ? "text-pe-primary" : "text-slate-400 dark:text-slate-500"
+                  }`}
+                >
                   {tc(lang, key)}
                 </span>
               </div>
@@ -184,27 +220,27 @@ export function BookingFlowClient({ lotId }: Props) {
           key={step}
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="rounded-2xl border border-slate-100 bg-white p-5 shadow-card"
+          className="rounded-2xl border border-slate-100 bg-white p-5 shadow-card dark:border-slate-700 dark:bg-slate-900"
         >
           {step === 1 && (
             <div className="space-y-4">
-              <p className="text-sm font-semibold text-slate-800">
+              <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">
                 {lang === "ar" ? "وقت البداية والنهاية" : "Start & end"}
               </p>
-              <label className="block text-xs text-slate-500">Start</label>
+              <label className="block text-xs text-slate-500 dark:text-slate-400">Start</label>
               <input
                 type="datetime-local"
-                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-600 dark:bg-slate-950 dark:text-slate-100"
                 value={toLocalInput(localStart)}
                 onChange={(e) => {
                   const d = new Date(e.target.value);
                   if (!Number.isNaN(d.getTime())) setLocalStart(d);
                 }}
               />
-              <label className="block text-xs text-slate-500">End</label>
+              <label className="block text-xs text-slate-500 dark:text-slate-400">End</label>
               <input
                 type="datetime-local"
-                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-600 dark:bg-slate-950 dark:text-slate-100"
                 value={toLocalInput(localEnd)}
                 onChange={(e) => {
                   const d = new Date(e.target.value);
@@ -216,7 +252,7 @@ export function BookingFlowClient({ lotId }: Props) {
                   <button
                     key={h}
                     type="button"
-                    className="rounded-full bg-pe-light px-4 py-2 text-xs font-semibold text-pe-primary"
+                    className="rounded-full bg-pe-light px-4 py-2 text-xs font-semibold text-pe-primary transition hover:brightness-95 dark:bg-slate-800 dark:text-sky-300"
                     onClick={() => applyDurationHours(h)}
                   >
                     {h}h
@@ -227,21 +263,43 @@ export function BookingFlowClient({ lotId }: Props) {
           )}
 
           {step === 2 && (
-            <div className="space-y-2">
+            <div className="space-y-3">
+              <p className="text-sm text-slate-600 dark:text-slate-300">
+                {lang === "ar"
+                  ? "اختر المركبة المناسبة لنوع الموقف (سيدان، دفع رباعي، …)."
+                  : "Pick the vehicle that matches your plate — class is shown for the gate."}
+              </p>
               {user.vehicles.map((v) => (
                 <button
                   key={v.id}
                   type="button"
                   onClick={() => setVehicle(v.id)}
-                  className={`flex w-full items-center justify-between rounded-xl border px-4 py-3 text-left text-sm ${
+                  className={`flex w-full items-center gap-4 rounded-2xl border px-4 py-4 text-left transition ${
                     vehicleId === v.id
-                      ? "border-pe-primary bg-pe-light"
-                      : "border-slate-200 bg-white"
+                      ? "border-pe-primary bg-pe-light shadow-md dark:bg-slate-800"
+                      : "border-slate-200 bg-white hover:border-pe-primary/40 dark:border-slate-600 dark:bg-slate-950"
                   }`}
                 >
-                  <span className="font-medium">
-                    {v.plate} — {v.make} {v.model}
-                  </span>
+                  {vehicleTypeIcon(v.type)}
+                  <div className="min-w-0 flex-1">
+                    <p className="font-bold text-slate-900 dark:text-white">
+                      {v.plate}{" "}
+                      <span className="font-normal text-slate-500 dark:text-slate-400">
+                        — {v.make} {v.model}
+                      </span>
+                    </p>
+                    <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-pe-primary">
+                      {vehicleTypeLabel(lang, v.type)} · {v.color}
+                    </p>
+                  </div>
+                  {vehicleId === v.id && (
+                    <motion.span
+                      layoutId="veh-check"
+                      className="flex h-8 w-8 items-center justify-center rounded-full bg-pe-primary text-sm font-bold text-white"
+                    >
+                      ✓
+                    </motion.span>
+                  )}
                 </button>
               ))}
             </div>
@@ -249,10 +307,25 @@ export function BookingFlowClient({ lotId }: Props) {
 
           {step === 3 && (
             <div className="space-y-3">
-              <p className="text-sm text-slate-600">{lot.name}</p>
-              <p className="text-sm text-slate-600">
+              <p className="text-sm font-semibold text-slate-900 dark:text-white">{lot.name}</p>
+              <p className="text-sm text-slate-600 dark:text-slate-300">
                 {lang === "ar" ? "الموقف" : "Slot"}: {slot.label}
               </p>
+              {(() => {
+                const v = user.vehicles.find((x) => x.id === vehicleId);
+                if (!v) return null;
+                return (
+                  <div className="flex items-center gap-3 rounded-xl border border-slate-100 bg-pe-surface px-3 py-2 dark:border-slate-700 dark:bg-slate-800">
+                    {vehicleTypeIcon(v.type)}
+                    <div className="text-sm">
+                      <p className="font-semibold text-slate-900 dark:text-white">{v.plate}</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                        {vehicleTypeLabel(lang, v.type)} · {v.make} {v.model}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })()}
               <PriceSummary lot={lot} start={localStart} end={localEnd} />
             </div>
           )}
@@ -264,16 +337,16 @@ export function BookingFlowClient({ lotId }: Props) {
                   key={m.id}
                   type="button"
                   onClick={() => setPaymentMethod(m.id)}
-                  className={`w-full rounded-xl border px-4 py-3 text-sm font-semibold ${
+                  className={`w-full rounded-xl border px-4 py-3 text-sm font-semibold transition ${
                     paymentMethod === m.id
-                      ? "border-pe-primary bg-pe-light text-pe-primary"
-                      : "border-slate-200 bg-white text-slate-700"
+                      ? "border-pe-primary bg-pe-light text-pe-primary dark:bg-slate-800"
+                      : "border-slate-200 bg-white text-slate-700 dark:border-slate-600 dark:bg-slate-950 dark:text-slate-200"
                   }`}
                 >
                   {m.label}
                 </button>
               ))}
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 {lang === "ar"
                   ? "عرض تجريبي — لا يتم تحصيل رسوم حقيقية."
                   : "Demo — no real charges. Stripe can be wired later."}
@@ -286,7 +359,7 @@ export function BookingFlowClient({ lotId }: Props) {
           <button
             type="button"
             onClick={goBack}
-            className="h-12 flex-1 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-700"
+            className="h-12 flex-1 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-700 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200"
           >
             {lang === "ar" ? "رجوع" : "Back"}
           </button>

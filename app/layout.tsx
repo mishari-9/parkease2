@@ -2,13 +2,16 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { BottomNav } from "@/components/BottomNav";
+import { DesktopNav } from "@/components/DesktopNav";
 import { LocaleHtml } from "@/components/LocaleHtml";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
-  title: "ParkEase — Smart parking",
-  description: "Find and reserve parking in Riyadh. HCI course demo.",
+  title: "ParkEase — Qassim University (College of Computer)",
+  description:
+    "Find parking availability, pricing, and reserve a slot around the College of Computer at Qassim University, Buraydah.",
 };
 
 export default function RootLayout({
@@ -18,13 +21,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} min-h-screen bg-pe-surface font-sans antialiased`}>
-        <LocaleHtml>
-          <div className="mx-auto min-h-screen max-w-lg shadow-[0_0_80px_rgba(26,111,191,0.06)]">
-            {children}
-          </div>
-          <BottomNav />
-        </LocaleHtml>
+      <body
+        className={`${inter.variable} min-h-screen bg-[var(--background)] font-sans antialiased text-[var(--foreground)] transition-colors duration-300`}
+      >
+        <ThemeProvider>
+          <LocaleHtml>
+            <DesktopNav />
+            <div className="relative min-h-screen lg:ps-64">
+              {children}
+              <BottomNav />
+            </div>
+          </LocaleHtml>
+        </ThemeProvider>
       </body>
     </html>
   );

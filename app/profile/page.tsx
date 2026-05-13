@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { useUserStore } from "@/store/userStore";
 import { tc } from "@/lib/i18n";
 import { MOCK_LOTS } from "@/data/mockLots";
@@ -20,56 +21,75 @@ export default function ProfilePage() {
   return (
     <>
       <SiteHeader />
-      <div className="mx-auto max-w-lg px-4 py-4 pb-28">
-        <div className="flex items-center gap-4 rounded-2xl bg-white p-4 shadow-card">
-          <div className="relative h-16 w-16 overflow-hidden rounded-full ring-2 ring-pe-light">
-            <Image src={user.avatarUrl} alt="" fill className="object-cover" sizes="64px" />
+      <div className="mx-auto max-w-3xl px-4 py-4 pb-28 sm:px-6 lg:px-8 lg:pb-10">
+        <div className="flex items-center gap-4 rounded-2xl border border-slate-100 bg-white p-5 shadow-card dark:border-slate-700 dark:bg-slate-900">
+          <div className="relative h-20 w-20 overflow-hidden rounded-full ring-4 ring-pe-light/80 dark:ring-slate-700">
+            <Image src={user.avatarUrl} alt="" fill className="object-cover" sizes="80px" />
           </div>
           <div>
-            <p className="text-lg font-bold text-slate-900">{user.fullName}</p>
-            <p className="text-sm text-slate-500">{user.email}</p>
-            <p className="text-xs text-slate-400">{user.phone}</p>
+            <p className="text-xl font-extrabold text-slate-900 dark:text-white">{user.fullName}</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">{user.email}</p>
+            <p className="text-xs text-slate-400 dark:text-slate-500">{user.phone}</p>
           </div>
         </div>
 
-        <section className="mt-6 rounded-2xl bg-white p-4 shadow-card">
-          <h2 className="text-sm font-bold text-pe-primary">{tc(lang, "vehicles")}</h2>
+        <section className="mt-6 rounded-2xl border border-slate-100 bg-white p-5 shadow-card dark:border-slate-700 dark:bg-slate-900">
+          <h2 className="text-sm font-extrabold uppercase tracking-wide text-pe-primary">{tc(lang, "vehicles")}</h2>
           <ul className="mt-3 space-y-2">
             {user.vehicles.map((v) => (
-              <li key={v.id} className="rounded-xl bg-pe-surface px-3 py-2 text-sm">
-                <span className="font-semibold">{v.plate}</span> · {v.make} {v.model}
+              <li
+                key={v.id}
+                className="rounded-xl border border-slate-100 bg-pe-surface px-4 py-3 text-sm dark:border-slate-700 dark:bg-slate-800/80"
+              >
+                <span className="font-bold text-slate-900 dark:text-white">{v.plate}</span> · {v.make}{" "}
+                {v.model}{" "}
+                <span className="text-xs font-semibold uppercase text-pe-primary">({v.type})</span>
               </li>
             ))}
           </ul>
         </section>
 
-        <section className="mt-4 rounded-2xl bg-white p-4 shadow-card">
-          <h2 className="text-sm font-bold text-pe-primary">{tc(lang, "savedLots")}</h2>
+        <section className="mt-4 rounded-2xl border border-slate-100 bg-white p-5 shadow-card dark:border-slate-700 dark:bg-slate-900">
+          <h2 className="text-sm font-extrabold uppercase tracking-wide text-pe-primary">{tc(lang, "savedLots")}</h2>
           <ul className="mt-3 space-y-2">
             {savedLots.map((l) => (
               <li key={l.id}>
-                <Link href={`/lots/${l.id}`} className="block rounded-xl bg-pe-surface px-3 py-2 text-sm font-medium text-pe-primary">
-                  {l.name}
+                <Link
+                  href={`/lots/${l.id}`}
+                  className="flex items-center gap-3 rounded-xl border border-transparent bg-pe-surface px-4 py-3 text-sm font-semibold text-pe-primary transition hover:border-pe-primary/30 dark:bg-slate-800/80"
+                >
+                  <div className="relative h-12 w-14 shrink-0 overflow-hidden rounded-lg bg-slate-200">
+                    <Image
+                      src={l.photoUrls[0]}
+                      alt={l.name}
+                      fill
+                      className="object-cover"
+                      sizes="56px"
+                    />
+                  </div>
+                  <span className="line-clamp-2">{l.name}</span>
                 </Link>
               </li>
             ))}
             {savedLots.length === 0 && (
-              <p className="text-sm text-slate-500">{lang === "ar" ? "لا شيء بعد" : "None yet"}</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">{lang === "ar" ? "لا شيء بعد" : "None yet"}</p>
             )}
           </ul>
         </section>
 
-        <section className="mt-4 space-y-2 rounded-2xl bg-white p-4 shadow-card">
+        <section className="mt-4 space-y-3 rounded-2xl border border-slate-100 bg-white p-5 shadow-card dark:border-slate-700 dark:bg-slate-900">
+          <p className="text-xs font-extrabold uppercase tracking-wide text-slate-400">Appearance</p>
+          <ThemeToggle />
           <button
             type="button"
             className="flex w-full items-center justify-between py-2 text-sm"
             onClick={() => setLanguage(lang === "en" ? "ar" : "en")}
           >
-            <span className="flex items-center gap-2 font-medium text-slate-800">
+            <span className="flex items-center gap-2 font-semibold text-slate-800 dark:text-slate-100">
               <Globe className="h-4 w-4 text-pe-primary" />
               {tc(lang, "language")}
             </span>
-            <span className="rounded-full bg-pe-light px-3 py-1 text-xs font-bold text-pe-primary">
+            <span className="rounded-full bg-pe-light px-3 py-1 text-xs font-bold text-pe-primary dark:bg-slate-800">
               {lang === "en" ? "EN" : "عربي"}
             </span>
           </button>
@@ -78,17 +98,17 @@ export default function ProfilePage() {
             className="flex w-full items-center justify-between py-2 text-sm"
             onClick={() => setNotifications(!notificationsOn)}
           >
-            <span className="flex items-center gap-2 font-medium text-slate-800">
+            <span className="flex items-center gap-2 font-semibold text-slate-800 dark:text-slate-100">
               <Bell className="h-4 w-4 text-pe-primary" />
               {tc(lang, "notifications")}
             </span>
-            <span className="text-xs font-semibold text-pe-primary">{notificationsOn ? "On" : "Off"}</span>
+            <span className="text-xs font-bold text-pe-primary">{notificationsOn ? "On" : "Off"}</span>
           </button>
         </section>
 
         <button
           type="button"
-          className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 py-3 text-sm font-semibold text-slate-600"
+          className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-800"
         >
           <LogOut className="h-4 w-4" />
           {tc(lang, "signOut")}

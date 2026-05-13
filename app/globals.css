@@ -3,14 +3,24 @@
 @tailwind utilities;
 
 :root {
-  --background: #f5f8fb;
+  --background: #f0f6fc;
   --foreground: #0f172a;
+  --app-card: #ffffff;
+  --app-muted: #64748b;
+}
+
+.dark {
+  --background: #0b1220;
+  --foreground: #e8f0fe;
+  --app-card: #111c2f;
+  --app-muted: #94a3b8;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: var(--font-inter), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  transition: background-color 0.35s ease, color 0.35s ease;
 }
 
 @layer utilities {
@@ -19,11 +29,135 @@ body {
   }
 }
 
-/* Leaflet z-index below our nav */
 .leaflet-container {
   z-index: 0;
+  background: var(--background);
 }
 
 .leaflet-popup-content-wrapper {
-  border-radius: 12px;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.15);
+}
+
+.dark .leaflet-popup-content-wrapper {
+  background: #111c2f;
+  color: #e8f0fe;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
+}
+
+.leaflet-popup-tip {
+  box-shadow: none;
+}
+
+.dark .leaflet-popup-tip {
+  background: #111c2f;
+}
+
+/* Custom map pins (HTML in DivIcon) */
+.pe-pin-root {
+  background: transparent !important;
+  border: none !important;
+}
+
+.pe-pin {
+  width: 112px;
+  border-radius: 14px;
+  padding: 7px 8px 9px;
+  background: #ffffff;
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.2);
+  border: 2.5px solid var(--pin-bg, #1a6fbf);
+  text-align: center;
+  transform-origin: bottom center;
+  animation: pe-pin-pop 0.4s cubic-bezier(0.34, 1.45, 0.64, 1);
+}
+
+.dark .pe-pin {
+  background: #0f172a;
+  color: #f1f5f9;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.55);
+}
+
+.pe-pin__head {
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.2;
+  color: #0f172a;
+  margin-bottom: 4px;
+  max-height: 2.4em;
+  overflow: hidden;
+}
+
+.dark .pe-pin__head {
+  color: #f8fafc;
+}
+
+.pe-pin__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 2px;
+}
+
+.pe-pin__price {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--pin-bg, #1a6fbf);
+}
+
+.pe-pin__per {
+  font-size: 9px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.dark .pe-pin__per {
+  color: #94a3b8;
+}
+
+.pe-pin__avail {
+  margin-top: 3px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #0f172a;
+}
+
+.dark .pe-pin__avail {
+  color: #e2e8f0;
+}
+
+.pe-pin__kind {
+  margin-top: 3px;
+  font-size: 9px;
+  font-weight: 600;
+  color: #64748b;
+  line-height: 1.2;
+}
+
+.dark .pe-pin__kind {
+  color: #94a3b8;
+}
+
+.pe-pin--ok {
+  border-color: #2ecc71;
+}
+
+.pe-pin--low {
+  border-color: #f39c12;
+}
+
+.pe-pin--full {
+  border-color: #e74c3c;
+}
+
+@keyframes pe-pin-pop {
+  from {
+    transform: scale(0.6) translateY(8px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
 }
