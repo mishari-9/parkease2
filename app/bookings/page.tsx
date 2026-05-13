@@ -46,7 +46,9 @@ export default function BookingsPage() {
               type="button"
               onClick={() => setTab(id)}
               className={`relative flex-1 rounded-xl py-2.5 text-xs font-semibold transition ${
-                tab === id ? "text-pe-primary" : "text-slate-500 dark:text-slate-400"
+                tab === id
+                  ? "text-pe-primary"
+                  : "text-slate-500 dark:text-slate-400"
               }`}
             >
               {tab === id && (
@@ -78,7 +80,7 @@ export default function BookingsPage() {
                   <Image
                     src={
                       b.lot.photoUrls?.[0] ??
-                      "https://images.unsplash.com/photo-1506521781263-d8422e82f57a?auto=format&fit=crop&w=800&q=90"
+                      "https://images.unsplash.com/photo-1590674899484-d5640d0f7b3a?auto=format&fit=crop&w=800&q=90"
                     }
                     alt={b.lot.name}
                     fill
@@ -87,14 +89,17 @@ export default function BookingsPage() {
                   />
                 </div>
                 <div className="min-w-0 flex-1 py-1">
-                  <p className="line-clamp-2 font-bold text-slate-900 dark:text-white">{b.lot.name}</p>
+                  <p className="line-clamp-2 font-bold text-slate-900 dark:text-white">
+                    {b.lot.name}
+                  </p>
                   {b.lot.mapLabel && (
                     <p className="mt-0.5 text-[10px] font-bold uppercase tracking-wide text-pe-primary">
                       {b.lot.mapLabel}
                     </p>
                   )}
                   <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                    {b.slot.label} · {formatDateTime(new Date(b.startTime), lang)}
+                    {b.slot.label} ·{" "}
+                    {formatDateTime(new Date(b.startTime), lang)}
                   </p>
                   <p className="mt-2 text-sm font-bold text-pe-primary">
                     {formatPrice(b.payment.totalAmount, "SAR", lang)}
@@ -118,7 +123,9 @@ export default function BookingsPage() {
 
         {filtered.length === 0 && (
           <div className="mt-16 text-center">
-            <p className="text-slate-600 dark:text-slate-300">{tc(lang, "noBookings")}</p>
+            <p className="text-slate-600 dark:text-slate-300">
+              {tc(lang, "noBookings")}
+            </p>
             <Link
               href="/"
               className="mt-4 inline-flex rounded-xl bg-gradient-to-r from-pe-primary to-pe-accent px-6 py-3 text-sm font-bold text-white shadow-lg"

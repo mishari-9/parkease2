@@ -29,18 +29,22 @@ export function LotDetailClient({ lot }: Props) {
   const reset = useBookingFlowStore((s) => s.reset);
 
   const floors = useMemo(
-    () => Array.from(new Set(lot.slots.map((s) => s.floor))).sort((a, b) => a - b),
-    [lot.slots]
+    () =>
+      Array.from(new Set(lot.slots.map((s) => s.floor))).sort((a, b) => a - b),
+    [lot.slots],
   );
   const [floor, setFloor] = useState(floors[0] ?? 1);
   const [selected, setSelected] = useState<ParkingSlot | null>(() => {
     if (!presetSlot) return null;
-    return lot.slots.find((s) => s.id === presetSlot && s.status === "available") ?? null;
+    return (
+      lot.slots.find((s) => s.id === presetSlot && s.status === "available") ??
+      null
+    );
   });
 
   const filtered = useMemo(
     () => lot.slots.filter((s) => s.floor === floor),
-    [lot.slots, floor]
+    [lot.slots, floor],
   );
 
   const openNow = isLotOpenAt(lot.hours, new Date());
@@ -59,7 +63,10 @@ export function LotDetailClient({ lot }: Props) {
       <div className="mx-auto max-w-4xl px-4 py-4 sm:px-6 lg:px-8">
         <div className="relative aspect-[16/9] max-h-[420px] overflow-hidden rounded-2xl bg-slate-200 shadow-card dark:bg-slate-800">
           <Image
-            src={lot.photoUrls[0] ?? "https://images.unsplash.com/photo-1506521781263-d8422e82f57a?w=1600&q=90"}
+            src={
+              lot.photoUrls[0] ??
+              "https://images.unsplash.com/photo-1590674899484-d5640d0f7b3a?auto=format&fit=crop&w=1600&q=90"
+            }
             alt={lot.name}
             fill
             className="object-cover"
@@ -72,7 +79,9 @@ export function LotDetailClient({ lot }: Props) {
             className="absolute end-3 top-3 flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-pe-primary shadow dark:bg-slate-900/90"
             aria-label="Save"
           >
-            <Heart className={`h-5 w-5 ${saved ? "fill-red-500 text-red-500" : ""}`} />
+            <Heart
+              className={`h-5 w-5 ${saved ? "fill-red-500 text-red-500" : ""}`}
+            />
           </button>
         </div>
 
@@ -80,7 +89,9 @@ export function LotDetailClient({ lot }: Props) {
           <div className="flex items-center gap-1 rounded-full bg-amber-50 px-2 py-1 text-amber-800 dark:bg-amber-950/50 dark:text-amber-200">
             <Star className="h-4 w-4 fill-amber-400 text-amber-500" />
             <span className="text-sm font-semibold">{lot.rating}</span>
-            <span className="text-xs text-amber-700/80">({lot.reviewCount})</span>
+            <span className="text-xs text-amber-700/80">
+              ({lot.reviewCount})
+            </span>
           </div>
           <span
             className={`rounded-full px-2 py-1 text-xs font-medium ${
@@ -89,12 +100,22 @@ export function LotDetailClient({ lot }: Props) {
                 : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300"
             }`}
           >
-            {openNow ? (lang === "ar" ? "مفتوح الآن" : "Open now") : lang === "ar" ? "مغلق" : "Closed"}
+            {openNow
+              ? lang === "ar"
+                ? "مفتوح الآن"
+                : "Open now"
+              : lang === "ar"
+                ? "مغلق"
+                : "Closed"}
           </span>
         </div>
 
-        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{lot.address}</p>
-        <p className="mt-1 text-xs font-bold uppercase tracking-wide text-pe-primary">{lot.mapLabel}</p>
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+          {lot.address}
+        </p>
+        <p className="mt-1 text-xs font-bold uppercase tracking-wide text-pe-primary">
+          {lot.mapLabel}
+        </p>
         <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
           {tc(lang, "lotType")}: {formatLotCategory(lang, lot.category)}
         </p>
@@ -132,10 +153,16 @@ export function LotDetailClient({ lot }: Props) {
             {tc(lang, "availability")}
           </h3>
           <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-            {lang === "ar" ? "أخضر متاح · برتقالي محجوز · أحمر مشغول" : "Green free · Orange reserved · Red busy"}
+            {lang === "ar"
+              ? "أخضر متاح · برتقالي محجوز · أحمر مشغول"
+              : "Green free · Orange reserved · Red busy"}
           </p>
           <div className="mt-3">
-            <SlotGrid slots={filtered} selectedSlotId={selected?.id ?? null} onSlotSelect={setSelected} />
+            <SlotGrid
+              slots={filtered}
+              selectedSlotId={selected?.id ?? null}
+              onSlotSelect={setSelected}
+            />
           </div>
         </div>
 
@@ -152,9 +179,14 @@ export function LotDetailClient({ lot }: Props) {
             {tc(lang, "reserve")}
           </button>
           {!selected && (
-            <p className="mt-2 text-center text-xs text-slate-500">{tc(lang, "selectSlot")}</p>
+            <p className="mt-2 text-center text-xs text-slate-500">
+              {tc(lang, "selectSlot")}
+            </p>
           )}
-          <Link href="/" className="mt-2 block text-center text-sm text-pe-primary underline">
+          <Link
+            href="/"
+            className="mt-2 block text-center text-sm text-pe-primary underline"
+          >
             {lang === "ar" ? "العودة للخريطة" : "Back to map"}
           </Link>
         </motion.div>

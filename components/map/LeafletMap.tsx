@@ -1,17 +1,24 @@
 "use client";
 
 import { useMemo, useEffect } from "react";
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  Popup,
-  useMap,
-} from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import Link from "next/link";
 import type { ParkingLot } from "@/types";
 import { colors } from "@/constants/colors";
+
+// Fix Leaflet default icon paths for bundled apps (Next.js / Webpack)
+import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
+import markerIcon from "leaflet/dist/images/marker-icon.png";
+import markerShadow from "leaflet/dist/images/marker-shadow.png";
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: markerIcon2x.src,
+  iconUrl: markerIcon.src,
+  shadowUrl: markerShadow.src,
+});
 
 function InvalidateOnMount() {
   const map = useMap();
@@ -76,7 +83,13 @@ type Props = {
   darkTiles?: boolean;
 };
 
-export default function LeafletMap({ lots, center, zoom = 16, onSelectLot, darkTiles }: Props) {
+export default function LeafletMap({
+  lots,
+  center,
+  zoom = 16,
+  onSelectLot,
+  darkTiles,
+}: Props) {
   const tileUrl = darkTiles
     ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
     : "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
@@ -114,10 +127,15 @@ export default function LeafletMap({ lots, center, zoom = 16, onSelectLot, darkT
           <Popup>
             <div className="min-w-[200px] space-y-1 p-0.5 text-slate-900 dark:text-slate-100">
               <p className="text-sm font-bold leading-snug">{lot.name}</p>
-              <p className="text-xs text-slate-600 dark:text-slate-300">{lot.mapLabel ?? ""}</p>
-              <p className="text-xs text-slate-500 dark:text-slate-400">{lot.address}</p>
+              <p className="text-xs text-slate-600 dark:text-slate-300">
+                {lot.mapLabel ?? ""}
+              </p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                {lot.address}
+              </p>
               <p className="pt-1 text-sm font-semibold text-pe-primary">
-                SAR {lot.pricePerHour}/hr · {lot.availableSlots}/{lot.totalSlots} free
+                SAR {lot.pricePerHour}/hr · {lot.availableSlots}/
+                {lot.totalSlots} free
               </p>
               <Link
                 href={`/lots/${lot.id}`}

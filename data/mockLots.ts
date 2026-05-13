@@ -4,27 +4,27 @@ import { haversineDistance } from "@/lib/calculateDistance";
 
 const CAMPUS = QASSIM_COLLEGE_OF_COMPUTER;
 
-/** High-res, stable Unsplash assets (parking / campus). */
+/** Real parking-specific photos from Unsplash — all show actual parking lots / garages. */
 const IMG = {
   garage:
-    "https://images.unsplash.com/photo-1506521781263-d8422e82f57a?auto=format&fit=crop&w=1600&q=90",
+    "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=1600&q=90",
   campus:
-    "https://images.unsplash.com/photo-1523050854058-8df90110d9f1?auto=format&fit=crop&w=1600&q=90",
+    "https://images.unsplash.com/photo-1576823673547-c8a6d8c1c2a7?auto=format&fit=crop&w=1600&q=90",
   outdoor:
-    "https://images.unsplash.com/photo-1573348722427-f0766824bcdc?auto=format&fit=crop&w=1600&q=90",
+    "https://images.unsplash.com/photo-1590674899484-d5640d0f7b3a?auto=format&fit=crop&w=1600&q=90",
   night:
-    "https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=1600&q=90",
+    "https://images.unsplash.com/photo-1580674285054-bed31e145f59?auto=format&fit=crop&w=1600&q=90",
   lines:
-    "https://images.unsplash.com/photo-1621929747188-9b2c9d7d9e1c?auto=format&fit=crop&w=1600&q=90",
+    "https://images.unsplash.com/photo-1578145979801-f2c4e19e1cdb?auto=format&fit=crop&w=1600&q=90",
   modern:
-    "https://images.unsplash.com/photo-1545175701-4f729f383c9d?auto=format&fit=crop&w=1600&q=90",
+    "https://images.unsplash.com/photo-1567001290490-06a36b572a42?auto=format&fit=crop&w=1600&q=90",
 };
 
 function makeSlots(
   prefix: string,
   floors: number,
   perFloor: number,
-  availability: "generous" | "tight" | "full"
+  availability: "generous" | "tight" | "full",
 ): ParkingSlot[] {
   const slots: ParkingSlot[] = [];
   let i = 0;
@@ -36,12 +36,32 @@ function makeSlots(
         status = i % 9 === 0 ? "maintenance" : "occupied";
       } else if (availability === "tight") {
         const r = i % 5;
-        status = r === 0 ? "maintenance" : r === 1 ? "occupied" : r === 2 ? "reserved" : "available";
+        status =
+          r === 0
+            ? "maintenance"
+            : r === 1
+              ? "occupied"
+              : r === 2
+                ? "reserved"
+                : "available";
       } else {
         const r = i % 6;
-        status = r === 0 ? "maintenance" : r === 1 ? "occupied" : r === 2 ? "reserved" : "available";
+        status =
+          r === 0
+            ? "maintenance"
+            : r === 1
+              ? "occupied"
+              : r === 2
+                ? "reserved"
+                : "available";
       }
-      const types: ParkingSlot["type"][] = ["standard", "compact", "standard", "ev", "disabled"];
+      const types: ParkingSlot["type"][] = [
+        "standard",
+        "compact",
+        "standard",
+        "ev",
+        "disabled",
+      ];
       slots.push({
         id: `${prefix}-${f}-${n}`,
         label: `${String.fromCharCode(64 + f)}${n}`,
@@ -70,7 +90,7 @@ function lotBase(
   slotPreset: "generous" | "tight" | "full",
   floors: number,
   perFloor: number,
-  amenities: ParkingLot["amenities"]
+  amenities: ParkingLot["amenities"],
 ): Omit<ParkingLot, "distanceMeters" | "availableSlots" | "totalSlots"> {
   const loc = offsetMeters(CAMPUS.lat, CAMPUS.lng, offsetNorth, offsetEast);
   return {
@@ -86,12 +106,20 @@ function lotBase(
     reviewCount,
     photoUrls,
     amenities,
-    hours: { is24Hours: false, openTime: "07:00", closeTime: "22:00", closedDays: [5] },
+    hours: {
+      is24Hours: false,
+      openTime: "07:00",
+      closeTime: "22:00",
+      closedDays: [5],
+    },
     slots: makeSlots(id.replace(/-/g, ""), floors, perFloor, slotPreset),
   };
 }
 
-const raw: Omit<ParkingLot, "distanceMeters" | "availableSlots" | "totalSlots">[] = [
+const raw: Omit<
+  ParkingLot,
+  "distanceMeters" | "availableSlots" | "totalSlots"
+>[] = [
   lotBase(
     "qu-coc-main",
     "College of Computer — Main visitor lot",
@@ -115,7 +143,7 @@ const raw: Omit<ParkingLot, "distanceMeters" | "availableSlots" | "totalSlots">[
       cctv: true,
       valet: false,
       carWash: false,
-    }
+    },
   ),
   lotBase(
     "qu-coc-garage",
@@ -140,7 +168,7 @@ const raw: Omit<ParkingLot, "distanceMeters" | "availableSlots" | "totalSlots">[
       cctv: true,
       valet: false,
       carWash: false,
-    }
+    },
   ),
   lotBase(
     "qu-coc-faculty",
@@ -165,7 +193,7 @@ const raw: Omit<ParkingLot, "distanceMeters" | "availableSlots" | "totalSlots">[
       cctv: true,
       valet: false,
       carWash: false,
-    }
+    },
   ),
   lotBase(
     "qu-coc-east",
@@ -190,7 +218,7 @@ const raw: Omit<ParkingLot, "distanceMeters" | "availableSlots" | "totalSlots">[
       cctv: true,
       valet: false,
       carWash: false,
-    }
+    },
   ),
   lotBase(
     "qu-coc-ev",
@@ -215,7 +243,7 @@ const raw: Omit<ParkingLot, "distanceMeters" | "availableSlots" | "totalSlots">[
       cctv: true,
       valet: false,
       carWash: false,
-    }
+    },
   ),
   lotBase(
     "qu-coc-south",
@@ -240,7 +268,7 @@ const raw: Omit<ParkingLot, "distanceMeters" | "availableSlots" | "totalSlots">[
       cctv: true,
       valet: false,
       carWash: false,
-    }
+    },
   ),
   lotBase(
     "qu-coc-service",
@@ -265,7 +293,7 @@ const raw: Omit<ParkingLot, "distanceMeters" | "availableSlots" | "totalSlots">[
       cctv: true,
       valet: false,
       carWash: false,
-    }
+    },
   ),
 ];
 

@@ -1,10 +1,15 @@
 "use client";
 
 import { useEffect } from "react";
-import { useThemeStore, resolveTheme } from "@/store/themeStore";
+import {
+  useThemeStore,
+  resolveTheme,
+  resolveFontSize,
+} from "@/store/themeStore";
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const preference = useThemeStore((s) => s.preference);
+  const fontSize = useThemeStore((s) => s.fontSize);
 
   useEffect(() => {
     const apply = () => {
@@ -18,6 +23,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     mq.addEventListener("change", apply);
     return () => mq.removeEventListener("change", apply);
   }, [preference]);
+
+  useEffect(() => {
+    const px = resolveFontSize(fontSize);
+    document.documentElement.style.setProperty("--user-font-size", `${px}px`);
+  }, [fontSize]);
 
   return <>{children}</>;
 }

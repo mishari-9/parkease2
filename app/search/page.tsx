@@ -22,7 +22,10 @@ function SearchResults() {
     <div className="mx-auto max-w-7xl px-4 py-4 pb-28 sm:px-6 lg:px-8 lg:pb-10">
       <SearchBar initialQuery={q} />
       <p className="mt-4 text-sm text-slate-500 dark:text-slate-400">
-        {lots.length} {lang === "ar" ? "نتيجة حول كلية الحاسب" : "lots around College of Computer"}
+        {lots.length}{" "}
+        {lang === "ar"
+          ? "نتيجة حول كلية الحاسب"
+          : "lots around College of Computer"}
         {q ? ` · “${q}”` : ""}
       </p>
       <ul className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -41,7 +44,7 @@ function SearchResults() {
                 <Image
                   src={
                     lot.photoUrls[0] ??
-                    "https://images.unsplash.com/photo-1506521781263-d8422e82f57a?auto=format&fit=crop&w=1600&q=90"
+                    "https://images.unsplash.com/photo-1590674899484-d5640d0f7b3a?auto=format&fit=crop&w=1600&q=90"
                   }
                   alt={lot.name}
                   fill
@@ -54,15 +57,20 @@ function SearchResults() {
                 </div>
               </div>
               <div className="flex flex-1 flex-col gap-1 p-4">
-                <p className="line-clamp-2 font-bold leading-snug text-slate-900 dark:text-white">{lot.name}</p>
-                <p className="line-clamp-2 text-xs text-slate-500 dark:text-slate-400">{lot.address}</p>
+                <p className="line-clamp-2 font-bold leading-snug text-slate-900 dark:text-white">
+                  {lot.name}
+                </p>
+                <p className="line-clamp-2 text-xs text-slate-500 dark:text-slate-400">
+                  {lot.address}
+                </p>
                 <p className="text-[11px] font-semibold uppercase tracking-wide text-pe-primary">
                   {lot.mapLabel ?? formatLotCategory(lang, lot.category)}
                 </p>
                 <div className="mt-auto flex items-center justify-between pt-2 text-sm font-semibold text-slate-700 dark:text-slate-200">
                   <span className="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
                     <MapPinned className="h-4 w-4" />
-                    {lot.availableSlots}/{lot.totalSlots} {lang === "ar" ? "متاح" : "free"}
+                    {lot.availableSlots}/{lot.totalSlots}{" "}
+                    {lang === "ar" ? "متاح" : "free"}
                   </span>
                   <ChevronRight className="h-5 w-5 text-slate-300 transition group-hover:translate-x-0.5 rtl:rotate-180 dark:text-slate-500" />
                 </div>
@@ -88,7 +96,9 @@ export default function SearchPage() {
       <SiteHeader />
       <Suspense
         fallback={
-          <div className="p-8 text-center text-slate-500 dark:text-slate-400">Loading…</div>
+          <div className="p-8 text-center text-slate-500 dark:text-slate-400">
+            Loading…
+          </div>
         }
       >
         <SearchResults />
