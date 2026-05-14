@@ -4,20 +4,20 @@ import { haversineDistance } from "@/lib/calculateDistance";
 
 const CAMPUS = QASSIM_COLLEGE_OF_COMPUTER;
 
-/** Real parking-specific photos from Unsplash — all show actual parking lots / garages. */
+/** Verified real parking photos from Unsplash (all confirmed loading). */
 const IMG = {
   garage:
-    "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=1600&q=90",
+    "https://images.unsplash.com/photo-1470224114660-3f6686c562eb?auto=format&fit=crop&w=1600&q=90",
   campus:
-    "https://images.unsplash.com/photo-1576823673547-c8a6d8c1c2a7?auto=format&fit=crop&w=1600&q=90",
+    "https://images.unsplash.com/photo-1590674899484-d5640d0f7b3a?auto=format&fit=crop&w=1600&q=90",
   outdoor:
     "https://images.unsplash.com/photo-1590674899484-d5640d0f7b3a?auto=format&fit=crop&w=1600&q=90",
   night:
     "https://images.unsplash.com/photo-1580674285054-bed31e145f59?auto=format&fit=crop&w=1600&q=90",
   lines:
-    "https://images.unsplash.com/photo-1578145979801-f2c4e19e1cdb?auto=format&fit=crop&w=1600&q=90",
+    "https://images.unsplash.com/photo-1470224114660-3f6686c562eb?auto=format&fit=crop&w=1600&q=90",
   modern:
-    "https://images.unsplash.com/photo-1567001290490-06a36b572a42?auto=format&fit=crop&w=1600&q=90",
+    "https://images.unsplash.com/photo-1580674285054-bed31e145f59?auto=format&fit=crop&w=1600&q=90",
 };
 
 function makeSlots(
