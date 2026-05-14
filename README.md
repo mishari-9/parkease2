@@ -16,12 +16,7 @@ Data is **mock/local** (no backend required for the demo). Bookings persist in `
 
 ## Scripts
 
-```bash
-npm install
-npm run dev      # http://localhost:3000
-npm run build
-npm start
-```
+
 
 ## Deploy to Vercel
 
